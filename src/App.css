@@ -31,3 +31,23 @@
   font-size: 18px;
   padding-top: 5px;
 }
+
+.finished-state{
+  font-size: 20px;
+  text-align: center;
+}
+
+.play{
+  background-color: rgb(243, 243, 138);
+  border-radius: 5px;
+  outline: none;
+  font-size: 40px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 45vh;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border: none;
+}
