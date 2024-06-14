@@ -8,6 +8,7 @@ const App = () => {
 
   const [gameState, setGameState] = useState(renderFrom);
   const [currentPlayer, setCurrentPlayer] = useState('cross');
+  const [finishedState, setFinishedState] = useState(false);
 
   return (
     <div className='main-div'>
@@ -15,20 +16,22 @@ const App = () => {
         <h1>Tic Tac Toe</h1>
       </div>
       <div className='move-detection'>
-          <div className='left'>You</div>
-          <div className='right'>Opponent</div>
-        </div>
+        <div className='left'>You</div>
+        <div className='right'>Opponent</div>
+      </div>
       <div>
         <div className='square-wrapper'>
-          {
-            gameState.map(arr =>
-              arr.map((e) => {
-                return <Square 
-                currentPlayer={currentPlayer}
-                setCurrentPlayer={setCurrentPlayer}
-                setGameState = {setGameState}
-                id={e} 
-                key={e}/>
+          {gameState && gameState.map((arr, rowIndex) => 
+              arr.map((e, colIndex) => {
+                return (<Square
+                  setFinishedState={setFinishedState}
+                  finishedState={finishedState}
+                  currentPlayer={currentPlayer}
+                  setCurrentPlayer={setCurrentPlayer}
+                  setGameState={setGameState}
+                  id={rowIndex * 3 + colIndex}
+                  key={rowIndex * 3 + colIndex} />
+                );
               })
             )
           }
