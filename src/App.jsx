@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './App.css'
 import Square from './Square'
+import { io } from 'socket.io-client';
+import Swal from 'sweetalert2';
 
 const renderFrom = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
 
@@ -11,6 +13,8 @@ const App = () => {
   const [finishedState, setFinishedState] = useState(false);
   const [finishedArrayState, setFinishedArrayState] = useState([]);
   const [play, setPlay] = useState(false);
+  const [socket, setSocket] = useState(null);
+  const [playerName, setPlayerName] = useState('');
 
   const checkWinner = () => {
     for (let row = 0; row < gameState.length; row++) {
@@ -54,9 +58,41 @@ const App = () => {
     }
   }, [gameState])
 
-  if(!play){
+  const takePlayerName = async () => {
+    const result = await Swal.fire({
+      title: "Enter your name",
+      input: "text",
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (!value) {
+          return "You need to write something!";
+        }
+      }
+    });
+    return result;
+  };
+
+  socket?.on("connect", function () {
+    setPlay(true);
+  })
+
+
+  async function playClick() {
+    const result = await takePlayerName();
+
+    if(!result.isConfirmed){
+      return;
+    }
+
+    const newSocket = io('http://localhost:3000', {
+      autoConnect: true,
+    });
+    setSocket(newSocket);
+  }
+
+  if (!play) {
     return <div className='main-div'>
-      <button className='play'>Play</button>
+      <button onClick={playClick} className='play'>Play</button>
     </div>
   }
   return (
@@ -86,9 +122,9 @@ const App = () => {
           }
         </div>
         {finishedState && finishedState !== 'draw' && (<h3 className='finished-state'>
-        {finishedState} won the game</h3>)}
+          {finishedState} won the game</h3>)}
         {finishedState && finishedState === 'draw' && (<h3 className='finished-state'>
-        Draw</h3>)}
+          Draw</h3>)}
       </div>
     </div>
   )
