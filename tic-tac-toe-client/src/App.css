@@ -51,3 +51,15 @@
   padding-right: 30px;
   border: none;
 }
+
+.waiting{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

@@ -15,6 +15,7 @@ const App = () => {
   const [play, setPlay] = useState(false);
   const [socket, setSocket] = useState(null);
   const [playerName, setPlayerName] = useState('');
+  const [opponentName, setOpponentName] = useState(null);
 
   const checkWinner = () => {
     for (let row = 0; row < gameState.length; row++) {
@@ -76,17 +77,31 @@ const App = () => {
     setPlay(true);
   })
 
+  socket?.on("OpponentNotFound", function () {
+    setOpponentName(false);
+  })
+
+  socket?.on("OpponentFound", function (data) {
+    setOpponentName(data.opponentName);
+  })
 
   async function playClick() {
     const result = await takePlayerName();
 
-    if(!result.isConfirmed){
+    if (!result.isConfirmed) {
       return;
     }
+
+    const username = result.value;
+    setPlayerName(username);
 
     const newSocket = io('http://localhost:3000', {
       autoConnect: true,
     });
+
+    newSocket?.emit("request_to_play", {
+      playerName: username,
+    })
     setSocket(newSocket);
   }
 
@@ -95,6 +110,15 @@ const App = () => {
       <button onClick={playClick} className='play'>Play</button>
     </div>
   }
+
+  if (play && !opponentName) {
+    return (
+      <div className='waiting'>
+        <p>Waiting for opponent...</p>
+      </div>
+    );
+  }
+
   return (
     <div className='main-div'>
       <div>
@@ -126,6 +150,8 @@ const App = () => {
         {finishedState && finishedState === 'draw' && (<h3 className='finished-state'>
           Draw</h3>)}
       </div>
+      {!finishedState && opponentName && (
+        <h5>You are playing against {opponentName}</h5>)}
     </div>
   )
 }
