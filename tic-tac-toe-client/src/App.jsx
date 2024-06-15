@@ -16,6 +16,7 @@ const App = () => {
   const [socket, setSocket] = useState(null);
   const [playerName, setPlayerName] = useState('');
   const [opponentName, setOpponentName] = useState(null);
+  const [playingAs, setPlayingAs] = useState(null);
 
   const checkWinner = () => {
     for (let row = 0; row < gameState.length; row++) {
@@ -73,6 +74,21 @@ const App = () => {
     return result;
   };
 
+  socket?.on("opponentLeftMatch", () => {
+    setFinishedState("opponentLeftMatch");
+  })
+  socket?.on("playerMoveFromServer", (data) => {
+    const id = data.state.id;
+    setGameState((prevState) => {
+      let newState = [...prevState];
+      const rowIndex = Math.floor(id / 3);
+      const colIndex = id % 3;
+      newState[rowIndex][colIndex] = data.state.sign;
+      return newState;
+    });
+    setCurrentPlayer(data.state.sign === 'circle' ? 'cross' : 'circle');
+  });
+
   socket?.on("connect", function () {
     setPlay(true);
   })
@@ -82,6 +98,7 @@ const App = () => {
   })
 
   socket?.on("OpponentFound", function (data) {
+    setPlayingAs(data.playingAs);
     setOpponentName(data.opponentName);
   })
 
@@ -125,33 +142,43 @@ const App = () => {
         <h1>Tic Tac Toe</h1>
       </div>
       <div className='move-detection'>
-        <div className='left'>You</div>
-        <div className='right'>Opponent</div>
+        <div className={`left ${currentPlayer === playingAs ? 'current-move' :
+          ''}`}>{playerName}</div>
+        <div className={`right ${currentPlayer !== playingAs ? 'current-move' :
+          ''}`}>{opponentName}</div>
       </div>
       <div>
         <div className='square-wrapper'>
           {gameState.map((arr, rowIndex) =>
             arr.map((e, colIndex) => {
               return (<Square
+                socket={socket}
+                playingAs={playingAs}
+                gameState={gameState}
                 finishedArrayState={finishedArrayState}
                 finishedState={finishedState}
                 currentPlayer={currentPlayer}
                 setCurrentPlayer={setCurrentPlayer}
                 setGameState={setGameState}
                 id={rowIndex * 3 + colIndex}
-                key={rowIndex * 3 + colIndex} />
+                key={rowIndex * 3 + colIndex}
+                currentElement={e} />
               );
             })
           )
           }
         </div>
-        {finishedState && finishedState !== 'draw' && (<h3 className='finished-state'>
+        {finishedState && finishedState !== 'opponentLeftMatch' && finishedState !== 'draw' && (<h3 className='finished-state'>
           {finishedState} won the game</h3>)}
-        {finishedState && finishedState === 'draw' && (<h3 className='finished-state'>
+        {finishedState && finishedState !== 'opponentLeftMatch' && finishedState === 'draw' && (<h3 className='finished-state'>
           Draw</h3>)}
       </div>
       {!finishedState && opponentName && (
-        <h5>You are playing against {opponentName}</h5>)}
+        <h5>You are playing against {opponentName}</h5>
+      )}
+      {finishedState && finishedState === 'opponentLeftMatch' && (
+        <h5>Opponent left the match, you win</h5>
+      )}
     </div>
   )
 }

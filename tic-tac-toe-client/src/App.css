@@ -63,3 +63,7 @@
   left: 0;
   right: 0;
 }
+
+.current-move{
+  background-color: green !important;
+}
