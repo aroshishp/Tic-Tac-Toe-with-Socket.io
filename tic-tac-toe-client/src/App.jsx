@@ -35,10 +35,12 @@ const App = () => {
     }
 
     if (gameState[0][0] === gameState[1][1] && gameState[0][0] === gameState[2][2]) {
+      setFinishedArrayState([0, 4, 8]);
       return gameState[0][0];
     }
 
     if (gameState[0][2] === gameState[1][1] && gameState[1][1] === gameState[2][0]) {
+      setFinishedArrayState([2, 4, 6]);
       return gameState[0][2];
     }
 
