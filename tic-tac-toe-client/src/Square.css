@@ -1,18 +1,18 @@
-.square{
+.square {
     width: 80px;
     height: 80px;
     background-color: rgb(243, 243, 138);
     border-radius: 5px;
 }
 
-.square:hover{
+.square:hover {
     cursor: pointer;
 }
 
-.not-allowed{
+.not-allowed {
     cursor: not-allowed !important;
 }
 
-.won{
+.won {
     background-color: lightgreen;
 }

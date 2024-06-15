@@ -71,14 +71,14 @@ io.on("connection", (socket) => {
     currentUser.playing = false;
 
     for (let index = 0; index < allRooms.length; index++) {
-      const {player1, player2} = allRooms[index];
-      
-      if(player1.socket.id === socket.id){
+      const { player1, player2 } = allRooms[index];
+
+      if (player1.socket.id === socket.id) {
         player2.socket.emit("opponentLeftMatch");
         break;
       }
 
-      if(player2.socket.id === socket.id){
+      if (player2.socket.id === socket.id) {
         player1.socket.emit("opponentLeftMatch");
         break;
       }

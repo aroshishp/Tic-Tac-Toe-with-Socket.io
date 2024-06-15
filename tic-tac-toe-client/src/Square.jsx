@@ -59,7 +59,7 @@ const Square = ({
     const [icon, setIcon] = useState(null);
 
     const clickOnSquare = () => {
-        if(playingAs !== currentPlayer){
+        if (playingAs !== currentPlayer) {
             return;
         }
         if (finishedState) {
@@ -94,7 +94,7 @@ const Square = ({
     }
     return <div onClick={clickOnSquare} className={`square ${finishedState ?
         'not-allowed' : ''} ${currentPlayer !== playingAs ?
-        'not-allowed' : ''} ${finishedArrayState.includes(id) ? 'won' : ''}`}>
+            'not-allowed' : ''} ${finishedArrayState.includes(id) ? 'won' : ''}`}>
         {currentElement === "circle" ? circleSvg : currentElement === "cross" ? crossSvg : icon}
     </div>
 };
